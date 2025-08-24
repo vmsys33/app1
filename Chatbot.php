@@ -22,9 +22,9 @@ class Chatbot
      * Chatbot constructor.
      *
      * @param string $apiKey The Hugging Face API key.
-     * @param string $model The model to use for the chatbot (e.g., 'gpt2').
+     * @param string $model The model to use for the chatbot.
      */
-    public function __construct($apiKey, $model = 'gpt2')
+    public function __construct($apiKey, $model = 'RedHatAI/Llama-3.1-8B-Instruct')
     {
         $this->apiKey = $apiKey;
         $this->apiUrl = "https://api-inference.huggingface.co/models/" . $model;
@@ -58,15 +58,21 @@ class Chatbot
         curl_close($ch);
 
         // Handle the API response.
+        $response = json_decode($result, true);
+
         if ($httpCode == 200) {
-            $response = json_decode($result, true);
             // The response for text generation is an array with one element.
             if (isset($response[0]['generated_text'])) {
                 return $response[0]['generated_text'];
             }
+        } else {
+            // If there's an error, the API often returns a JSON with an 'error' key.
+            if (isset($response['error'])) {
+                return 'API Error: ' . $response['error'];
+            }
         }
 
         // Return a default error message if something goes wrong.
-        return 'Sorry, I could not get a response.';
+        return 'Sorry, I could not get a response. HTTP Code: ' . $httpCode;
     }
 }
