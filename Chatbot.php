@@ -24,7 +24,7 @@ class Chatbot
      * @param string $apiKey The Hugging Face API key.
      * @param string $model The model to use for the chatbot.
      */
-    public function __construct($apiKey, $model = 'RedHatAI/Llama-3.1-8B-Instruct')
+    public function __construct($apiKey, $model = 'google/flan-t5-base')
     {
         $this->apiKey = $apiKey;
         $this->apiUrl = "https://api-inference.huggingface.co/models/" . $model;
